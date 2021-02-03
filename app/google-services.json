@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "29960636225",
+    "project_id": "rainy-messenger",
+    "storage_bucket": "rainy-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29960636225:android:d09c131a12700891a483c0",
+        "android_client_info": {
+          "package_name": "com.example.rainymessanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29960636225-dgtok5jepk380630hda0ialjnjqdsn25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rainymessanger",
+            "certificate_hash": "aa915bc79a83896bf1f36540449e30c6618a7d10"
+          }
+        },
+        {
+          "client_id": "29960636225-cvfa6c1fqb8sa6n2guj8nqdf883tnspr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-_8TfVQUXZZ4bNeAU7cptmdio_veN__Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29960636225-cvfa6c1fqb8sa6n2guj8nqdf883tnspr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
