@@ -6,4 +6,7 @@
     <string name="login">Login</string>
     <string name="email">Email :</string>
     <string name="password">password :</string>
+    <string name="create_account">Create new account</string>
+    <string name="name">name :</string>
+    <string name="create">Create account</string>
 </resources>
