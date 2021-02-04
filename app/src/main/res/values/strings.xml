@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RainyMessanger</string>
+    <string name="welcome">welcome to rainy</string>
 </resources>
