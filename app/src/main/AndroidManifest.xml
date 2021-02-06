@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RainyMessanger">
-        <activity android:name=".controller.CreateAccountActivity"></activity>
+        <activity android:name=".controller.DashboardActivity"></activity>
+        <activity android:name=".controller.CreateAccountActivity" />
         <activity android:name=".controller.LoginActivity" />
         <activity android:name=".controller.RainyActivity">
             <intent-filter>

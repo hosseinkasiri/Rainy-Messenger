@@ -1,5 +1,6 @@
 package com.example.rainymessanger.controller
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -11,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.rainymessanger.R
+import com.example.rainymessanger.controller.helper.Toaster
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -69,10 +71,13 @@ class CreateAccountFragment : Fragment() {
                     userObject.put("image", "default")
                     userObject.put("thumbImage", "default")
                     mDatabase!!.setValue(userObject).addOnCompleteListener {
-                        if (it.isSuccessful)
-                            Toast.makeText(activity, "User created", Toast.LENGTH_SHORT).show()
+                        if (it.isSuccessful) {
+                            var intent = DashboardActivity.newIntent(activity!!, name)
+                            startActivity(intent)
+                            activity!!.finish()
+                        }
                         else
-                            Toast.makeText(activity, "User not created", Toast.LENGTH_SHORT).show()
+                            Toaster.makeToast(activity!!, "user not created")
                     }
                 }else
                     Log.d("error", it.exception.toString())
