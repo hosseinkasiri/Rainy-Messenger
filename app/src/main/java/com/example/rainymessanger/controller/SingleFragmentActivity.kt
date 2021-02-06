@@ -11,14 +11,13 @@ open abstract class SingleFragmentActivity : AppCompatActivity() {
 
     abstract fun mFragment(): Fragment
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        var manager: FragmentManager = supportFragmentManager
-        if (manager.findFragmentById(R.id.activity_login) == null){
-            manager.beginTransaction()
-                .add(R.id.activity_login, mFragment())
-                .commit();
+        if (savedInstanceState == null) {
+            var manager = supportFragmentManager.beginTransaction()
+            manager.replace(R.id.activity_login, mFragment())
+            manager.commitAllowingStateLoss()
         }
     }
 }

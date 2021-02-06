@@ -59,6 +59,7 @@
                     android:hint="@string/email"
                     android:paddingBottom="10dp"
                     android:layout_marginTop="10dp"
+                    android:inputType="textEmailAddress"
                     android:textSize="14sp"
                     android:textCursorDrawable="@drawable/bg_input_cursor_2"/>
 
@@ -68,6 +69,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
                     android:paddingBottom="10dp"
+                    android:inputType="textPassword"
                     android:layout_marginTop="10dp"
                     android:textSize="14sp"
                     android:textCursorDrawable="@drawable/bg_input_cursor_2"/>
@@ -81,9 +83,7 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 
 </RelativeLayout>

@@ -1,13 +1,28 @@
 package com.example.rainymessanger.controller
 
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import com.example.rainymessanger.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class CreateAccountFragment : Fragment() {
+
+    lateinit var mAuth: FirebaseAuth
+    lateinit var mDatabase: DatabaseReference
+    lateinit var mCreateButton: Button
+    lateinit var mEmail: EditText
+    lateinit var mPassword: EditText
+    lateinit var mDisplayName: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,24 +35,53 @@ class CreateAccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_account, container, false)
+        var view =inflater.inflate(R.layout.activity_create_account, container, false)
+        findViews(view)
+        mAuth = FirebaseAuth.getInstance()
+        mCreateButton.setOnClickListener(View.OnClickListener {
+            var email = mEmail.text.toString().trim()
+            var password = mPassword.text.toString().trim()
+            var name = mDisplayName.text.toString().trim()
+            if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(name))
+                createAccount(email, password, name)
+            else
+                Toast.makeText(activity, "please enter your information", Toast.LENGTH_SHORT).show()
+        })
+        return view
+    }
+
+    private fun findViews(view: View) {
+        mCreateButton = view.findViewById(R.id.create_account_btn)
+        mEmail = view.findViewById(R.id.account_display_email)
+        mPassword = view.findViewById(R.id.account_display_password)
+        mDisplayName = view.findViewById(R.id.account_display_name)
+    }
+
+    private fun createAccount(email: String, password: String, name: String){
+        mAuth!!.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener {
+                if (it.isSuccessful){
+                    var currentUser = mAuth!!.currentUser
+                    var userId = currentUser!!.uid
+                    mDatabase = FirebaseDatabase.getInstance().reference.child("users").child(userId)
+                    var userObject = HashMap<String, String>()
+                    userObject.put("displayName", name)
+                    userObject.put("image", "default")
+                    userObject.put("thumbImage", "default")
+                    mDatabase!!.setValue(userObject).addOnCompleteListener {
+                        if (it.isSuccessful)
+                            Toast.makeText(activity, "User created", Toast.LENGTH_SHORT).show()
+                        else
+                            Toast.makeText(activity, "User not created", Toast.LENGTH_SHORT).show()
+                    }
+                }else
+                    Log.d("error", it.exception.toString())
+            }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CreateAccountFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance() =
-            CreateAccountFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
+        fun newInstance(): CreateAccountFragment{
+            return CreateAccountFragment()
+        }
     }
 }
