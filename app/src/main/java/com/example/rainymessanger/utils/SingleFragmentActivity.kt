@@ -1,4 +1,4 @@
-package com.example.rainymessanger.controller
+package com.example.rainymessanger.utils
 
 import android.os.Bundle
 import android.os.PersistableBundle

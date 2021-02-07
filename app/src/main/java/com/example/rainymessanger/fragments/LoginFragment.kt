@@ -1,4 +1,4 @@
-package com.example.rainymessanger.controller
+package com.example.rainymessanger.fragments
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -8,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import com.example.rainymessanger.R
-import com.example.rainymessanger.controller.helper.Toaster
+import com.example.rainymessanger.activities.DashboardActivity
+import com.example.rainymessanger.helper.Toaster
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 
 class LoginFragment : Fragment() {
 

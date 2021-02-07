@@ -1,4 +1,4 @@
-package com.example.rainymessanger.controller.helper
+package com.example.rainymessanger.helper
 
 import android.content.Context
 import android.widget.Toast
