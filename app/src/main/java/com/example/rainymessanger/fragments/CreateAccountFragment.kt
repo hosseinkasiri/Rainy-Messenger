@@ -69,6 +69,7 @@ class CreateAccountFragment : Fragment() {
                     var userObject = HashMap<String, String>()
                     userObject.put("displayName", name)
                     userObject.put("image", "default")
+                    userObject.put("status", "i`m programmer ...")
                     userObject.put("thumbImage", "default")
                     mDatabase!!.setValue(userObject).addOnCompleteListener {
                         if (it.isSuccessful) {

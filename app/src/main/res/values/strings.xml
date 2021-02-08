@@ -9,4 +9,8 @@
     <string name="create_account">Create new account</string>
     <string name="name">name :</string>
     <string name="create">Create account</string>
+    <string name="change_picture">Change Picture</string>
+    <string name="change_status">Change Status</string>
+    <string name="status">Status</string>
+    <string name="setting_name">Name</string>
 </resources>
