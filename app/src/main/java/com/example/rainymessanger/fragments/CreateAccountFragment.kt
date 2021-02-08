@@ -60,10 +60,10 @@ class CreateAccountFragment : Fragment() {
     }
 
     private fun createAccount(email: String, password: String, name: String){
-        mAuth!!.createUserWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful){
-                    var currentUser = mAuth!!.currentUser
+                    var currentUser = mAuth.currentUser
                     var userId = currentUser!!.uid
                     mDatabase = FirebaseDatabase.getInstance().reference.child("users").child(userId)
                     var userObject = HashMap<String, String>()
@@ -71,7 +71,7 @@ class CreateAccountFragment : Fragment() {
                     userObject.put("image", "default")
                     userObject.put("status", "i`m programmer ...")
                     userObject.put("thumbImage", "default")
-                    mDatabase!!.setValue(userObject).addOnCompleteListener {
+                    mDatabase.setValue(userObject).addOnCompleteListener {
                         if (it.isSuccessful) {
                             var intent = DashboardActivity.newIntent(activity!!, name)
                             startActivity(intent)

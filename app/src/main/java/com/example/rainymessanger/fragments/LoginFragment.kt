@@ -38,9 +38,9 @@ class LoginFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         mLoginButton.setOnClickListener(View.OnClickListener {
-            var email = mEmail.text.toString()
-            var password = mPassword.text.toString()
-            if (TextUtils.isEmpty(email) && TextUtils.isEmpty(password))
+            var email = mEmail.text.toString().trim()
+            var password = mPassword.text.toString().trim()
+            if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password))
                 loginUser(email, password)
             else
                 Toaster.makeToast(activity!!, "please inter your information ")
