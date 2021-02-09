@@ -4,15 +4,19 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.example.rainymessanger.R
+import com.example.rainymessanger.fragments.StatusDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.storage.StorageReference
 
 class SettingsActivity : AppCompatActivity() {
+
+    val STATUS_DIALOG = "statusDialog"
 
     lateinit var mDatabase: DatabaseReference
     lateinit var mCurrentUser: FirebaseUser
@@ -38,8 +42,15 @@ class SettingsActivity : AppCompatActivity() {
         mCurrentUser = FirebaseAuth.getInstance().currentUser!!
         var userId = mCurrentUser.uid
         mDatabase = FirebaseDatabase.getInstance().reference.child("users").child(userId)
+        getInformation()
+        mChangeStatus.setOnClickListener(View.OnClickListener {
+            var statusDialog = StatusDialogFragment.newInstance(mStatus.text.toString())
+            statusDialog.show(supportFragmentManager, STATUS_DIALOG)
+        })
+    }
 
-        mDatabase.addValueEventListener(object : ValueEventListener{
+    private fun getInformation() {
+        mDatabase.addValueEventListener(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 var displayName = snapshot.child("displayName").value
