@@ -4,9 +4,33 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.rainymessanger.R
+import com.example.rainymessanger.model.FriendlyMessage
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatActivity : AppCompatActivity() {
+
+    lateinit var mCurrentUser: FirebaseUser
+    lateinit var mDatabase: DatabaseReference
+    lateinit var mUserId: String
+    lateinit var mLinearLayoutManager: LinearLayoutManager
+    lateinit var mFirebaseAdapter: FirebaseRecyclerAdapter<FriendlyMessage, MessageHolder>
+
+    lateinit var mMessageRecycler: RecyclerView
+    lateinit var mSendButton: Button
+    lateinit var mEditText: EditText
 
     companion object{
         val EXT_ID = "userId"
@@ -27,5 +51,112 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        findViews()
+        supportActionBar!!.title = "Message"
+        mCurrentUser = FirebaseAuth.getInstance().currentUser!!
+        mUserId = intent.extras!!.getString(EXT_ID).toString()
+        mLinearLayoutManager = LinearLayoutManager(this)
+        mLinearLayoutManager.stackFromEnd
+        mDatabase = FirebaseDatabase.getInstance().reference
+        mFirebaseAdapter = object: FirebaseRecyclerAdapter<FriendlyMessage, MessageHolder>(
+                FriendlyMessage::class.java,
+                R.layout.item_chat,
+                MessageHolder::class.java,
+                mDatabase.child("messages")
+        ){
+            override fun populateViewHolder(messageHolder: MessageHolder?, friendlyMessage: FriendlyMessage?, position: Int) {
+                if (friendlyMessage!!.text != null){
+                    messageHolder!!.bindView(friendlyMessage)
+                    var myUserId = mCurrentUser.uid
+                    var isMe = friendlyMessage.id.equals(myUserId)
+
+                    if (isMe){
+                        messageHolder.mProfileRight.visibility = View.VISIBLE
+                        messageHolder.mProfileLeft.visibility = View.GONE
+                        messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+                        messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+
+                        mDatabase.child("users").child(myUserId)
+                                .addValueEventListener(object: ValueEventListener{
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        var imageUrl = snapshot.child("thumbImage").value.toString()
+                                        var name = snapshot.child("displayName")
+                                        Glide.with(applicationContext)
+                                                .load(imageUrl)
+                                                .placeholder(R.drawable.profile_img)
+                                                .into(messageHolder.mProfileRight)
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                    }
+                                })
+                    }else{
+                        messageHolder.mProfileRight.visibility = View.GONE
+                        messageHolder.mProfileLeft.visibility = View.VISIBLE
+                        messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+                        messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+
+                        mDatabase.child("users").child(mUserId)
+                                .addValueEventListener(object: ValueEventListener{
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        var imageUrl = snapshot.child("thumbImage").value.toString()
+                                        var name = snapshot.child("displayName").value.toString()
+                                        Glide.with(applicationContext)
+                                                .load(imageUrl)
+                                                .placeholder(R.drawable.profile_img)
+                                                .into(messageHolder.mProfileLeft)
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                    }
+                                })
+                    }
+
+                }
+
+            }
+        }
+
+        mMessageRecycler.layoutManager = mLinearLayoutManager
+        mMessageRecycler.adapter = mFirebaseAdapter
+
+        mSendButton.setOnClickListener(View.OnClickListener {
+            if (!intent.extras!!.get(EXT_NAME).toString().equals("")){
+                var currentUserName = intent.extras!!.get(EXT_NAME)
+                var currentUserId = mCurrentUser.uid
+                var friendlyMessage = FriendlyMessage(
+                        currentUserId,
+                        currentUserName.toString().trim(),
+                        mEditText.text.toString().trim())
+
+                mDatabase.child("messages").push().setValue(friendlyMessage)
+                mEditText.setText("")
+            }
+        })
+    }
+
+    class MessageHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+
+        lateinit var mChatText: TextView
+        lateinit var mChatName: TextView
+        lateinit var mProfileLeft: CircleImageView
+        lateinit var mProfileRight: CircleImageView
+
+        fun bindView(friendlyMessage: FriendlyMessage){
+            mChatText = itemView.findViewById(R.id.chat_text)
+            mChatName = itemView.findViewById(R.id.chat_name)
+            mProfileLeft = itemView.findViewById(R.id.chat_profile)
+            mProfileRight = itemView.findViewById(R.id.chat_profile_right)
+
+            mChatText.text = friendlyMessage.text
+            mChatName.text = friendlyMessage.name
+        }
+
+    }
+
+    fun findViews(){
+        mMessageRecycler = findViewById(R.id.message_recycler)
+        mSendButton = findViewById(R.id.message_send)
+        mEditText = findViewById(R.id.message_edit_text)
     }
 }
