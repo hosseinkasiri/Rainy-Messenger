@@ -6,11 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.rainymessanger.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -43,6 +43,7 @@ class ProfileActivity : AppCompatActivity() {
             mCurrentUser = FirebaseAuth.getInstance().currentUser!!
             mDatabase = FirebaseDatabase.getInstance().reference.child("users").child(mUserId)
         }
+        setUpProfile()
     }
 
     fun findViews(){
@@ -52,6 +53,23 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun setUpProfile(){
-        
+        mDatabase.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var displayName = snapshot.child("displayName").value.toString()
+                var status = snapshot.child("status").value.toString()
+                var profile = snapshot.child("image").value.toString()
+
+                mName.text = displayName
+                mStatus.text = status
+                Glide.with(this@ProfileActivity)
+                        .load(profile)
+                        .placeholder(R.drawable.profile_img)
+                        .into(mProfile)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 }
