@@ -8,16 +8,26 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_water_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RainyMessanger">
-        <activity android:name=".activities.ChatActivity"
+        android:theme="@style/Theme.RainyMessenger">
+        <activity android:name=".activities.SplashScreenActivity"
+            android:theme="@style/Theme.RainyMessenger.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.ChatActivity"
             android:parentActivityName=".activities.DashboardActivity">
         </activity>
-        <activity android:name=".activities.ProfileActivity"
-            android:parentActivityName=".activities.DashboardActivity"/>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:parentActivityName=".activities.DashboardActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -26,11 +36,6 @@
         <activity android:name=".activities.CreateAccountActivity" />
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RainyActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

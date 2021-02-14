@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/teal_200"
+    android:background="@color/blue"
     tools:context=".fragments.LoginFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="320dp"
         android:layout_centerInParent="true"
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
@@ -21,13 +21,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login"
-                android:layout_gravity="center_horizontal"
-                android:textSize="24sp"
-                android:layout_marginTop="40dp"/>
+                android:src="@drawable/ic_launcher_water_foreground"
+                android:layout_gravity="center_horizontal"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
