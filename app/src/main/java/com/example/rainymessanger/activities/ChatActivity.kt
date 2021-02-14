@@ -24,9 +24,12 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var mCurrentUser: FirebaseUser
     lateinit var mDatabase: DatabaseReference
-    lateinit var mUserId: String
+    lateinit var mUserDatabase: DatabaseReference
+    lateinit var mReceiverUserId: String
+    lateinit var mReceiverUserName: String
     lateinit var mLinearLayoutManager: LinearLayoutManager
     lateinit var mFirebaseAdapter: FirebaseRecyclerAdapter<FriendlyMessage, MessageHolder>
+    lateinit var mCurrentUserName: String
 
     lateinit var mMessageRecycler: RecyclerView
     lateinit var mSendButton: Button
@@ -54,10 +57,24 @@ class ChatActivity : AppCompatActivity() {
         findViews()
         supportActionBar!!.title = "Message"
         mCurrentUser = FirebaseAuth.getInstance().currentUser!!
-        mUserId = intent.extras!!.getString(EXT_ID).toString()
+        mReceiverUserId = intent.extras!!.getString(EXT_ID).toString()
+        mReceiverUserName = intent.extras!!.getString(EXT_NAME).toString()
         mLinearLayoutManager = LinearLayoutManager(this)
-        mLinearLayoutManager.stackFromEnd
+        mLinearLayoutManager.stackFromEnd = true
         mDatabase = FirebaseDatabase.getInstance().reference
+        mUserDatabase = FirebaseDatabase.getInstance().reference.child("users").child(mCurrentUser.uid)
+
+        mUserDatabase.addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                mCurrentUserName = snapshot.child("displayName").value.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+
         mFirebaseAdapter = object: FirebaseRecyclerAdapter<FriendlyMessage, MessageHolder>(
                 FriendlyMessage::class.java,
                 R.layout.item_chat,
@@ -65,8 +82,11 @@ class ChatActivity : AppCompatActivity() {
                 mDatabase.child("messages")
         ){
             override fun populateViewHolder(messageHolder: MessageHolder?, friendlyMessage: FriendlyMessage?, position: Int) {
-                if (friendlyMessage!!.text != null){
+                if (friendlyMessage!!.text != null &&
+                        (friendlyMessage.sender == mCurrentUserName && friendlyMessage.receiver == mReceiverUserName) ||
+                        (friendlyMessage.sender == mReceiverUserName && friendlyMessage.receiver == mCurrentUserName)){
                     messageHolder!!.bindView(friendlyMessage)
+                    messageHolder.itemView.visibility = View.VISIBLE
                     var myUserId = mCurrentUser.uid
                     var isMe = friendlyMessage.id.equals(myUserId)
 
@@ -96,7 +116,7 @@ class ChatActivity : AppCompatActivity() {
                         messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
                         messageHolder.mChatText.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
 
-                        mDatabase.child("users").child(mUserId)
+                        mDatabase.child("users").child(mReceiverUserId)
                                 .addValueEventListener(object: ValueEventListener{
                                     override fun onDataChange(snapshot: DataSnapshot) {
                                         var imageUrl = snapshot.child("thumbImage").value.toString()
@@ -122,11 +142,12 @@ class ChatActivity : AppCompatActivity() {
 
         mSendButton.setOnClickListener(View.OnClickListener {
             if (!intent.extras!!.get(EXT_NAME).toString().equals("")){
-                var currentUserName = intent.extras!!.get(EXT_NAME)
+//                var currentUserName = intent.extras!!.get(EXT_NAME)
                 var currentUserId = mCurrentUser.uid
                 var friendlyMessage = FriendlyMessage(
                         currentUserId,
-                        currentUserName.toString().trim(),
+                        mCurrentUserName,
+                        mReceiverUserName,
                         mEditText.text.toString().trim())
 
                 mDatabase.child("messages").push().setValue(friendlyMessage)
@@ -149,9 +170,8 @@ class ChatActivity : AppCompatActivity() {
             mProfileRight = itemView.findViewById(R.id.chat_profile_right)
 
             mChatText.text = friendlyMessage.text
-            mChatName.text = friendlyMessage.name
+            mChatName.text = friendlyMessage.sender
         }
-
     }
 
     fun findViews(){

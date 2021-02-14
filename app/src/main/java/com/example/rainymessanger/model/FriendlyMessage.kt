@@ -3,19 +3,19 @@ package com.example.rainymessanger.model
 class FriendlyMessage() {
 
     var id: String? = null
-    var name: String? = null
+    var sender: String? = null
+    var receiver: String? = null
     var text: String? = null
 
     constructor(
             id: String,
-            name: String,
+            sender: String,
+            receiver: String,
             text: String
     ): this(){
         this.id = id
-        this.name = name
+        this.sender = sender
+        this.receiver = receiver
         this.text = text
     }
-
-
-
 }

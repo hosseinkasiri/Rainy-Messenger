@@ -16,7 +16,7 @@ import com.google.firebase.database.*
 class ProfileActivity : AppCompatActivity() {
 
     lateinit var mCurrentUser: FirebaseUser
-    lateinit var mDatabase: DatabaseReference
+    lateinit var mUserDatabase: DatabaseReference
     lateinit var mUserId: String
 
     lateinit var mProfile: ImageView
@@ -41,7 +41,7 @@ class ProfileActivity : AppCompatActivity() {
         if (intent.extras != null){
             mUserId = intent.extras!!.getString(EXT_ID).toString()
             mCurrentUser = FirebaseAuth.getInstance().currentUser!!
-            mDatabase = FirebaseDatabase.getInstance().reference.child("users").child(mUserId)
+            mUserDatabase = FirebaseDatabase.getInstance().reference.child("users").child(mUserId)
         }
         setUpProfile()
     }
@@ -53,7 +53,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun setUpProfile(){
-        mDatabase.addValueEventListener(object: ValueEventListener{
+        mUserDatabase.addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 var displayName = snapshot.child("displayName").value.toString()
                 var status = snapshot.child("status").value.toString()
