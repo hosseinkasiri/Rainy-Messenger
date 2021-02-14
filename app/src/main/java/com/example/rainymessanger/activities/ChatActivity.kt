@@ -56,8 +56,8 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
         findViews()
-        setActionBar()
         setVariable()
+        setActionBar()
         setAdapter()
         mMessageRecycler.layoutManager = mLinearLayoutManager
         mMessageRecycler.adapter = mFirebaseAdapter
@@ -99,7 +99,7 @@ class ChatActivity : AppCompatActivity() {
     private fun setAdapter() {
         mFirebaseAdapter = object : FirebaseRecyclerAdapter<FriendlyMessage, MessageHolder>(
                 FriendlyMessage::class.java,
-                R.layout.item_chat,
+                R.layout.chat_row,
                 MessageHolder::class.java,
                 mDatabase.child("messages")
         ) {

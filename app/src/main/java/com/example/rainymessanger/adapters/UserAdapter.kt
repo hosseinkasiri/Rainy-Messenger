@@ -21,10 +21,10 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class UserAdapter(databaseQuery: DatabaseReference, val context: Context): FirebaseRecyclerAdapter
 <User, UserAdapter.UserHolder>(
-    User::class.java,
-    R.layout.item_user,
-    UserHolder::class.java,
-    databaseQuery
+        User::class.java,
+        R.layout.item_user,
+        UserHolder::class.java,
+        databaseQuery
 ){
 
     override fun populateViewHolder(userHolder: UserHolder?,user: User?, position: Int) {
@@ -44,10 +44,10 @@ class UserAdapter(databaseQuery: DatabaseReference, val context: Context): Fireb
                     context.startActivity(profileIntent)
                 }else{
                     var chatIntent = ChatActivity.newIntent(context,
-                        userId!!,
-                        userName,
-                        userStatus,
-                        profilePic)
+                            userId!!,
+                            userName,
+                            userStatus,
+                            profilePic)
                     context.startActivity(chatIntent)
                 }
             })
@@ -73,9 +73,9 @@ class UserAdapter(databaseQuery: DatabaseReference, val context: Context): Fireb
             userStatus.text = user.status
 
             Glide.with(context)
-                .load(mProfileTxt)
-                .placeholder(R.drawable.profile_img)
-                .into(userProfile)
+                    .load(mProfileTxt)
+                    .placeholder(R.drawable.profile_img)
+                    .into(userProfile)
         }
     }
 }
