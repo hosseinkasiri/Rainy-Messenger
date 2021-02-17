@@ -3,8 +3,11 @@ package com.example.rainymessanger.activities
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.Image
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -106,28 +109,26 @@ class SettingsActivity : AppCompatActivity() {
                 filePath.putFile(resultUri)
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
-                                filePath.downloadUrl.addOnCompleteListener {
+                                filePath.downloadUrl.addOnSuccessListener {
                                     if (it != null) {
                                         var downloadUrl = it.toString()
                                         var uploadTask: UploadTask = thumbFilePath.putBytes(thumbByteArray)
 
                                         uploadTask.addOnCompleteListener {
-                                            thumbFilePath.downloadUrl.addOnCompleteListener {
+                                            thumbFilePath.downloadUrl.addOnSuccessListener {
                                                 var thumbUrl = it.toString()
-                                                if (it.isSuccessful) {
-                                                    var updateObj = HashMap<String, Any>()
-                                                    updateObj.put("image", downloadUrl)
-                                                    updateObj.put("thumbImage", thumbUrl)
+                                                var updateObj = HashMap<String, Any>()
+                                                updateObj.put("image", downloadUrl)
+                                                updateObj.put("thumbImage", thumbUrl)
 
-                                                    mDatabase.updateChildren(updateObj)
-                                                            .addOnCompleteListener {
-                                                                if (it.isSuccessful) {
-                                                                    Toaster.makeToast(
-                                                                            this,
-                                                                            "profile image saved")
-                                                                }
+                                                mDatabase.updateChildren(updateObj)
+                                                        .addOnCompleteListener {
+                                                            if (it.isSuccessful) {
+                                                                Toaster.makeToast(
+                                                                        this,
+                                                                        "profile image saved")
                                                             }
-                                                }
+                                                        }
                                             }
                                         }
                                     }
@@ -150,7 +151,7 @@ class SettingsActivity : AppCompatActivity() {
                 mName.text = displayName.toString()
                 mStatus.text = status.toString()
 
-                if (!image!!.equals("default")){
+                if (!image.equals("default")){
                     Glide.with(applicationContext)
                             .load(image)
                             .placeholder(R.drawable.profile_img)
